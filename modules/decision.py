@@ -34,12 +34,13 @@ async def generate_plan(
     memory_texts = "\n".join(f"- {m.text}" for m in memory_items) or "None"
 
     prompt_template = load_prompt(prompt_path)
-
+    
     prompt = prompt_template.format(
         tool_descriptions=tool_descriptions,
         user_input=user_input
     )
 
+    print("Plan prompt[bugfix]", prompt)                      #BugFix: Added this to print the prompt   
 
     try:
         raw = (await model.generate_text(prompt)).strip()

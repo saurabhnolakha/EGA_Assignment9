@@ -6,7 +6,7 @@ agent:
     and memory to solve complex tasks step-by-step.
 
 strategy:
-  planning_mode: conservative   # [conservative, exploratory]
+  planning_mode: exploratory   # [conservative, exploratory]
   exploration_mode: parallel    # [parallel, sequential] (only relevant if planning_mode = exploratory)
   memory_fallback_enabled: true # after tool exploration failure
   max_steps: 3                  # max sequential agent steps

@@ -93,7 +93,7 @@ class AgentLoop:
                                 f"Your last tool produced this result:\n\n"
                                 f"{content}\n\n"
                                 f"If this fully answers the task, return:\n"
-                                f"FINAL_ANSWER: your answer\n\n"
+                                f"FINAL_ANSWER: {result}\n\n"                    #BugFix: Changed this to the actual answer
                                 f"Otherwise, return the next FUNCTION_CALL."
                             )
                             log("loop", f"📨 Forwarding intermediate result to next step:\n{self.context.user_input_override}\n\n")

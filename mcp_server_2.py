@@ -112,8 +112,10 @@ def search_stored_documents(input: SearchDocumentsInput) -> list[str]:
         for idx in I[0]:
             data = metadata[idx]
             results.append(f"{data['chunk']}\n[Source: {data['doc']}, ID: {data['chunk_id']}]")
+        print("search_stored_documents Results[bugfix]", results) #BugFix: Added this to print the results
         return results
     except Exception as e:
+        print("search_stored_documents Error[bugfix]", str(e)) #BugFix: Added this to print the error   
         return [f"ERROR: Failed to search: {str(e)}"]
 
 
@@ -204,6 +206,8 @@ def convert_webpage_url_into_markdown(input: UrlInput) -> MarkdownOutput:
 
     markdown = replace_images_with_captions(markdown)
     return MarkdownOutput(markdown=markdown)
+
+
 
 @mcp.tool()
 def extract_pdf(input: FilePathInput) -> MarkdownOutput:
@@ -340,7 +344,7 @@ def process_documents():
 
             elif ext in [".html", ".htm", ".url"]:
                 mcp_log("INFO", f"Using Trafilatura to extract {file.name}")
-                markdown = extract_webpage(UrlInput(url=file.read_text().strip())).markdown
+                markdown = extract_webpage(MarkdownInput(html=file.read_text().strip())).markdown
 
             else:
                 # Fallback to MarkItDown for other formats
@@ -399,6 +403,26 @@ def ensure_faiss_ready():
         process_documents()
     else:
         mcp_log("INFO", "Index already exists. Skipping regeneration.")
+
+
+@mcp.tool()
+def extract_webpage(input: MarkdownInput) -> MarkdownOutput:
+    """Return clean webpage content from raw HTML (not URL). Usage: input={"input": {"html": "<html>...</html>"}} result = await mcp.call_tool('extract_webpage', input)"""
+
+    html = input.html
+    if not html:
+        return MarkdownOutput(markdown="No HTML content provided.")
+
+    markdown = trafilatura.extract(
+        html,
+        include_comments=False,
+        include_tables=True,
+        include_images=True,
+        output_format='markdown'
+    ) or ""
+
+    markdown = replace_images_with_captions(markdown)
+    return MarkdownOutput(markdown=markdown)
 
 
 if __name__ == "__main__":

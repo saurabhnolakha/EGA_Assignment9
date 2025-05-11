@@ -50,6 +50,7 @@ async def extract_perception(user_input: str, mcp_server_descriptions: dict) -> 
         user_input=user_input
     )
     
+    print("Perception prompt[bugfix]", prompt)                      #BugFix: Added this to print the prompt   
 
     try:
         raw = await model.generate_text(prompt)
